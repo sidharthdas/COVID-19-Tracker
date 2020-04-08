@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Covid-19 Tracker Application</title>
+<link rel="icon" href="covid.png" type="image/png" sizes="16x16">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+<style>
+table {
+	border-collapse: separate;
+	border-spacing: 0 15px;
+}
+
+th {
+	background-color: #4287f5;
+	color: white;
+}
+
+th, td {
+	width: 150px;
+	text-align: center;
+	border: 1px solid black;
+	padding: 5px;
+}
+
+h2 {
+	color: red;
+}
+
+h1 {
+	color: #4287f5;
+	text-align: center;
+}
+
+h3 span {
+	background-color: red
+}
+</style>
+</head>
+
+<body>
+	<h1>COVID-19 Tracker</h1>
+
+	<div class="jumbotron">
+		<h2 class="display-4" th:text="${totalReportedCases}"></h2>
+		<p class="lead">Total Case Reported Till Today.</p>
+
+		<h2 class="display-4" th:text="${totalDeathCount}"></h2>
+		<p class="lead">Total Death Reported Till Today.</p>
+
+		<h4 class="display-18" th:text="${totalNewCases}">Hey</h4>
+		<p class="lead">New Cases.</p>
+
+		<h4 class="display-18" th:text="${newDeathReportedToday}">Hey</h4>
+		<p class="lead">New Death Cases.</p>
+
+		<h3 class="display-18" th:text="${india.presentDayCases}">
+			<span> </span>are cases in India
+		</h3>
+		<p class="lead">India Total cases.</p>
+
+	</div>
+
+
+	<div class="container">
+		<table>
+			<h3>Country Wise Data</h3>
+			<tr>
+				<th>Country</th>
+				<th>Total Cases</th>
+				<th>Total Death</th>
+				<th>New Cases Today</th>
+				<th>New Death Cases Today</th>
+			</tr>
+			<tr th:each="allData : ${allData}">
+				<td th:text="${allData.country}">Onions</td>
+				<td th:text="${allData.presentDayCases}">2.41</td>
+				<td th:text="${allData.totalDeathCountToday}">2.41</td>
+				<td th:text="${allData.presentDayCases - allData.previousDayCases}">0</td>
+				<td
+					th:text="${allData.totalDeathCountToday - allData.totalDeathCountPreviousDay}">0</td>
+			</tr>
+		</table>
+</body>
+</div>
+
+</html>
