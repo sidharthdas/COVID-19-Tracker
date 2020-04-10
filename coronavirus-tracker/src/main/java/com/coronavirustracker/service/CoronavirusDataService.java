@@ -22,7 +22,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.coronavirustracker.CovidDataClient;
 import com.coronavirustracker.constants.InterfaceConstants;
 import com.coronavirustracker.dao.IndiaCoronadataDAO;
 import com.coronavirustracker.dao.LocationStatsDAO;
@@ -31,6 +30,7 @@ import com.coronavirustracker.dto.AllDataCountryWiseDTO;
 import com.coronavirustracker.dto.CountryWithCasesDTO;
 import com.coronavirustracker.dto.CountryWithDeathCasesDTO;
 import com.coronavirustracker.dto.DataDTO;
+import com.coronavirustracker.feignclient.CovidDataClient;
 import com.coronavirustracker.functionalinterfaces.MathCalculation;
 import com.coronavirustracker.model.IndiaCoronadata;
 import com.coronavirustracker.model.LocationStats;
