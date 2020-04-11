@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coronavirustracker.dto.AllDataCountryWiseDTO;
 import com.coronavirustracker.dto.CountryWithCasesDTO;
+import com.coronavirustracker.model.IndiaCoronadata;
 import com.coronavirustracker.service.CoronavirusDataService;
 
 /**
@@ -44,6 +47,16 @@ public class HomeRestController {
 	@GetMapping("/total-death-count")
 	public int totalCount() {
 		return coronavirusDataService.totalDeathCases();
+	}
+
+	@PostMapping("/get-data-by-state")
+	public List<IndiaCoronadata> getDateByState(@RequestBody String state) {
+		return coronavirusDataService.getDataByState(state);
+	}
+
+	@GetMapping("/get-test")
+	public String getName() {
+		return coronavirusDataService.dataViaFeignCleint();
 	}
 
 }

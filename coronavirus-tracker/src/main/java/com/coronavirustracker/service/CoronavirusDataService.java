@@ -35,6 +35,8 @@ import com.coronavirustracker.functionalinterfaces.MathCalculation;
 import com.coronavirustracker.model.IndiaCoronadata;
 import com.coronavirustracker.model.LocationStats;
 import com.coronavirustracker.model.LocationStatsDeath;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 /**
  * @author sidharthdas
@@ -66,7 +68,7 @@ public class CoronavirusDataService {
 	};
 
 	@PostConstruct
-	@Scheduled(cron = "10 * * * * *")
+	@Scheduled(cron = "* 5 * * * *")
 	public void fetchVirusData() throws IOException, InterruptedException {
 		List<LocationStats> newStats = new ArrayList<>();
 
@@ -120,9 +122,20 @@ public class CoronavirusDataService {
 
 	}
 
+	public String getFallbackDetailsOfAllPatientInIndia() {
+		System.out.println("Fallback METHOD");
+		return "In Fallback method";
+	}
+
+
 	@PostConstruct
-	@Scheduled(cron = "* * * * * 1")
-	public void getDetailsOfAllPatientInIndia() {
+	@HystrixCommand(fallbackMethod = "getFallbackDetailsOfAllPatientInIndia", commandProperties = {
+
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000000"),
+			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
+			@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50"),
+			@HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5060") })
+	public String getDetailsOfAllPatientInIndia() {
 		DataDTO allData = restTemplate.getForObject(InterfaceConstants.COVID_INDIA_RAW_DATA_URL, DataDTO.class);
 		allData.getRaw_data().forEach(patient -> {
 
@@ -150,7 +163,7 @@ public class CoronavirusDataService {
 			}
 
 		});
-
+		return "In main method";
 	}
 
 	public List<LocationStats> getAllStats() {
@@ -349,15 +362,31 @@ public class CoronavirusDataService {
 
 	// FeignClient Call.
 
-	@PostConstruct
-	public void testFeignCleint() {
+	@HystrixCommand(fallbackMethod = "getFallbackdataViaFeignCleint", commandProperties = {
+
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000000"),
+			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
+			@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50"),
+			@HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5060") })
+	public String dataViaFeignCleint() {
 		List<String> patientStatus = new ArrayList<>();
 		DataDTO dataDTO = covidDataClient.allPatientData();
 		dataDTO.getRaw_data().forEach(patient -> {
-
+			System.out.println(patient.getCurrentstatus());
 			patientStatus.add(patient.getCurrentstatus());
 		});
+		return "{ \"command\" : \"working\"}"; // Just to get the JSON respond.
+	}
 
+	public String getFallbackdataViaFeignCleint() {
+		System.out.println("Fallback METHOD");
+		return "In Fallback method";
+	}
+
+	public List<IndiaCoronadata> getDataByState(String state) {
+		// String state1 = "Odisha";
+		System.out.println(indiaCoronadataDAO.getDataByState(state));
+		return indiaCoronadataDAO.getDataByState(state);
 	}
 
 }
